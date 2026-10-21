@@ -1,15 +1,16 @@
-// Licensed under the Dartastic Pro Software License Agreement.
+// Licensed under the Apache License, Version 2.0
 // Copyright 2025-2026 Mindful Software LLC d/b/a Dartastic.io, All rights reserved.
 
-import 'package:dartastic_opentelemetry/dartastic_opentelemetry.dart';
+import 'package:dartastic_opentelemetry_api/dartastic_opentelemetry_api.dart';
 
 import 'otel_azure_blob_storage_suppression.dart';
 
 const _tracerName = 'dartastic_otel_libs_azure_blob_storage';
 
-Tracer _tracer() => OTel.tracerProvider().getTracer(_tracerName);
+APITracer _tracer() => OTelAPI.tracerProvider().getTracer(_tracerName);
 
 class AzureBlobStorageResult {
+  /// Creates a result.
   const AzureBlobStorageResult({
     this.account,
     this.endpoint,
@@ -97,8 +98,13 @@ class AzureBlobStorageResult {
   final int? statusCode;
 }
 
+/// What a traced call returned: the value for the caller plus fields
+/// recorded on the span.
 class AzureBlobStorageCallResult<T> {
+  /// Creates a call result.
   const AzureBlobStorageCallResult({required this.value, this.result});
+
+  /// The value returned to the caller.
   final T value;
   final AzureBlobStorageResult? result;
 }
@@ -138,7 +144,7 @@ Future<T> tracedAzureBlobStorage<T>({
   final span = _tracer().startSpan(
     'azure_blob_storage $operation',
     kind: SpanKind.client,
-    attributes: OTel.attributesFromMap(m),
+    attributes: OTelAPI.attributesFromMap(m),
   );
   try {
     final r = await invoke();
@@ -146,106 +152,107 @@ Future<T> tracedAzureBlobStorage<T>({
       final res = r.result!;
       final extras = <Attribute<Object>>[];
       if (res.account != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.account',
           res.account!,
         ));
       }
       if (res.endpoint != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.endpoint',
           res.endpoint!,
         ));
       }
       if (res.container != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.container',
           res.container!,
         ));
       }
       if (res.blob != null) {
-        extras.add(OTel.attributeString('azure_blob_storage.blob', res.blob!));
+        extras
+            .add(OTelAPI.attributeString('azure_blob_storage.blob', res.blob!));
       }
       if (res.blobKind != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.blob.kind',
           res.blobKind!,
         ));
       }
       if (res.tier != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.tier',
           res.tier!,
         ));
       }
       if (res.contentType != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.content_type',
           res.contentType!,
         ));
       }
       if (res.sizeBytes != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'azure_blob_storage.size_bytes',
           res.sizeBytes!,
         ));
       }
       if (res.bytesTransferred != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'azure_blob_storage.bytes_transferred',
           res.bytesTransferred!,
         ));
       }
       if (res.etag != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.etag',
           res.etag!,
         ));
       }
       if (res.leaseState != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.lease.state',
           res.leaseState!,
         ));
       }
       if (res.leaseStatus != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.lease.status',
           res.leaseStatus!,
         ));
       }
       if (res.versionId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.version.id',
           res.versionId!,
         ));
       }
       if (res.snapshot != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.snapshot',
           res.snapshot!,
         ));
       }
       if (res.encryptionScope != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.encryption.scope',
           res.encryptionScope!,
         ));
       }
       if (res.cmkKeyName != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.cmk.key_name',
           res.cmkKeyName!,
         ));
       }
       if (res.cpkSha256 != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.cpk.sha256',
           res.cpkSha256!,
         ));
       }
       if (res.copyStatus != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.copy.status',
           res.copyStatus!,
         ));
@@ -257,31 +264,31 @@ Future<T> tracedAzureBlobStorage<T>({
         }
       }
       if (res.copyProgress != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.copy.progress',
           res.copyProgress!,
         ));
       }
       if (res.sasMethod != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.sas.method',
           res.sasMethod!,
         ));
       }
       if (res.sasExpiresSec != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'azure_blob_storage.sas.expires_sec',
           res.sasExpiresSec!,
         ));
       }
       if (res.requestId != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.request.id',
           res.requestId!,
         ));
       }
       if (res.serverErrorCode != null) {
-        extras.add(OTel.attributeString(
+        extras.add(OTelAPI.attributeString(
           'azure_blob_storage.error.code',
           res.serverErrorCode!,
         ));
@@ -291,7 +298,7 @@ Future<T> tracedAzureBlobStorage<T>({
         );
       }
       if (res.statusCode != null) {
-        extras.add(OTel.attributeInt(
+        extras.add(OTelAPI.attributeInt(
           'http.response.status_code',
           res.statusCode!,
         ));
@@ -302,13 +309,13 @@ Future<T> tracedAzureBlobStorage<T>({
           );
         }
       }
-      if (extras.isNotEmpty) span.addAttributes(OTel.attributes(extras));
+      if (extras.isNotEmpty) span.addAttributes(OTelAPI.attributes(extras));
     }
     return r.value;
   } catch (e, st) {
-    span.addAttributes(OTel.attributes([
-      OTel.attributeString(
-        ErrorResource.errorType.key,
+    span.addAttributes(OTelAPI.attributes([
+      OTelAPI.attributeString(
+        ErrorAttributes.errorType.key,
         e.runtimeType.toString(),
       ),
     ]));
